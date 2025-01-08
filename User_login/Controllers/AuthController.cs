@@ -42,7 +42,6 @@ namespace User_login.Controllers
             {
                 IAuthenticationStrategyService strategy;
 
-                // Determine which authentication strategy to use (email or username)
                 if (request.Identifier.Contains("@"))
                 {
                     strategy = new EmailAuthenticationStrategyService(_userService, _userManager);
@@ -52,16 +51,12 @@ namespace User_login.Controllers
                     strategy = new UsernameAuthenticationStrategyService(_userService, _userManager);
                 }
 
-                // Set the authentication strategy
                 _authenticationContext.SetStrategy(strategy);
 
-                // Authenticate the user
                 var user = await _authenticationContext.AuthenticateAsync(request.Identifier, request.Password);
 
-                // Generate the token using the injected TokenService
                 var token = _tokenService.GenerateToken(user);
 
-                // Return the token with a success message
                 return Ok(new AuthResponseDto
                 {
                     Token = token,
@@ -70,12 +65,10 @@ namespace User_login.Controllers
             }
             catch (UnauthorizedAccessException)
             {
-                // Return unauthorized error if credentials are invalid
                 return Unauthorized(new { error = "Invalid credentials" });
             }
             catch (Exception ex)
             {
-                // Return internal server error if any other exception occurs
                 return StatusCode(500, new { error = ex.Message });
             }
         }

@@ -24,7 +24,6 @@ namespace User_login.Services
                 throw new UnauthorizedAccessException("Invalid username or password.");
             }
 
-            // Şifre doğrulama
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, password);
             if (!isPasswordValid)
             {
